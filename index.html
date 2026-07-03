@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fwdERP — Infrastructure Discovery Questionnaire</title>
+<style>
+  :root{
+    --paper:#F4F5F3; --card:#FFFFFF; --ink:#16191C; --ink2:#565C63; --ink3:#868C8F;
+    --line:#E4E6E4; --line2:#D3D7D4;
+    --petrol:#1D4E5F; --petrol-tint:#E8EFEF;
+    --crit:#B0322A; --crit-t:#F7E7E5;
+    --good:#2C7057; --good-t:#E3EFE9;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0}
+  .wrap{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.55;font-size:16px;-webkit-font-smoothing:antialiased}
+  .page{max-width:900px;margin:0 auto;padding:0 28px 90px}
+  a{color:var(--petrol)}
+  h1,h2{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;text-wrap:balance;margin:0}
+  .mono{font-family:var(--mono)}
+
+  .mast{border-top:5px solid var(--petrol);padding:36px 0 26px;border-bottom:1px solid var(--line)}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--petrol);margin:0 0 15px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .tag{background:var(--petrol-tint);color:var(--petrol);padding:2px 9px;border-radius:4px;font-weight:600;letter-spacing:.06em}
+  .mast h1{font-size:36px;line-height:1.06;margin:0 0 12px}
+  .mast .sub{font-size:17px;color:var(--ink2);max-width:70ch;line-height:1.5}
+
+  .how{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin-top:24px;font-size:14.5px;color:var(--ink2)}
+  .how b{color:var(--ink)}
+  .how p{margin:0 0 10px}
+  .how p:last-child{margin:0}
+  .keyrow{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:12.5px;align-items:center}
+  .keyrow span{display:flex;align-items:center;gap:7px}
+  .chip{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.05em;padding:2px 7px;border-radius:5px}
+  .chip.p0{background:var(--crit-t);color:var(--crit)}
+  .chip.read{background:var(--petrol-tint);color:var(--petrol)}
+  .fcode{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.04em;color:var(--crit);background:var(--crit-t);padding:2px 7px;border-radius:4px;flex:none;margin-top:2px}
+  .sec-lede{font-size:14.5px;color:var(--ink2);margin:0 0 16px;max-width:76ch;line-height:1.55}
+  .sec-lede b{color:var(--ink);font-weight:600}
+
+  .sec{margin-top:38px}
+  .sec-head{display:flex;align-items:baseline;gap:13px;border-bottom:2px solid var(--petrol);padding-bottom:9px;margin-bottom:14px}
+  .sec-head .n{font-family:var(--mono);font-size:13px;color:var(--petrol);font-weight:600}
+  .sec-head h2{font-size:21px}
+
+  .q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 16px;margin-bottom:9px}
+  .q-top{display:flex;gap:10px;align-items:flex-start}
+  .q-num{font-family:var(--mono);font-size:12px;color:var(--ink3);font-weight:600;flex:none;margin-top:2px;min-width:24px}
+  .q-text{font-size:15.5px;color:var(--ink);line-height:1.42}
+  .q-text b{font-weight:600}
+  .prio-tag{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.05em;color:var(--crit);background:var(--crit-t);padding:2px 6px;border-radius:4px;flex:none;margin-top:3px}
+  .q.prio{border-left:3px solid var(--crit)}
+  .read{margin:7px 0 0 34px;font-size:13px;color:var(--ink2);font-family:var(--mono);line-height:1.45;border-left:2px solid var(--line2);padding-left:10px}
+  .read b{color:var(--petrol);font-weight:600}
+
+  .foot{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink3);line-height:1.6}
+  .foot b{color:var(--ink2);font-weight:600}
+
+  .toolbar{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--line);padding:11px 0 12px;display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:18px 0 4px}
+  .toolbar button{font-family:var(--sans);font-size:13.5px;font-weight:500;padding:8px 15px;border-radius:8px;border:1px solid var(--line2);background:var(--card);color:var(--ink);cursor:pointer}
+  .toolbar button:hover{border-color:var(--petrol);color:var(--petrol)}
+  .toolbar button.primary{background:var(--petrol);color:#fff;border-color:var(--petrol)}
+  .toolbar button.primary:hover{color:#fff;filter:brightness(1.08)}
+  .toolbar .status{font-size:12.5px;color:var(--ink3);margin-left:auto;font-family:var(--mono)}
+  .answer{display:block;width:100%;margin:11px 0 0;min-height:50px;resize:vertical;font-family:var(--sans);font-size:14px;line-height:1.5;color:var(--ink);background:var(--paper);border:1px solid var(--line2);border-radius:8px;padding:9px 11px}
+  .answer::placeholder{color:var(--ink3)}
+  .answer:focus{outline:2px solid var(--petrol);outline-offset:1px;border-color:var(--petrol)}
+  @media(max-width:640px){.mast h1{font-size:28px}.read{margin-left:0}}
+</style>
+</head>
+<body>
+
+<div class="wrap"><div class="page">
+
+  <header class="mast">
+    <p class="eyebrow"><span class="tag">Discovery</span><span>Infrastructure &amp; Operations</span></p>
+    <h1>Infra reconciliation — for Jonathan</h1>
+    <p class="sub">The assessment was a code review, so most of what we can say about the running system is inferred from the repo. Below is what we read; mostly we just need you to confirm or correct it. Where there's a <span class="mono" style="color:var(--petrol)">Read:</span> line, a "yep" or a one-line fix is a complete answer.</p>
+  </header>
+
+  <div class="how">
+    <p><b>Format.</b> Each item is either a confirm/correct on something we inferred, or a genuine unknown. Terse answers are ideal — "correct", "no, it's X", "not yet" all work. Skip anything that's obviously N/A.</p>
+    <p><b>Filling it in.</b> Type under any item — your answers save in this browser as you go. When you're done, hit <b>Download answers</b> and send us the file. (Nothing is transmitted automatically; it stays on your machine until you export.)</p>
+    <div class="keyrow">
+      <span><span class="chip p0">P0</span> maps to a pre-launch blocker in the assessment</span>
+      <span><span class="chip read">Read:</span> what we pulled from the repo — confirm or correct</span>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="primary" id="dl">Download answers</button>
+    <button id="cp">Copy answers</button>
+    <button id="clr">Clear</button>
+    <span class="status" id="status"></span>
+  </div>
+
+  <!-- 1 -->
+  <section class="sec">
+    <div class="sec-head"><span class="n">01</span><h2>Hosting &amp; deployment</h2></div>
+    <div class="q prio"><div class="q-top"><span class="q-num">1.1</span><span class="prio-tag">P0</span><span class="q-text">Where does prod run — provider, region, single host or several?</span></div><div class="read">Read: single VM, <b>CentOS/RHEL 8</b>, host nginx → Docker Compose on loopback ports, Cloudflare in front. One box for the whole stack.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">1.2</span><span class="q-text">Is prod actually <span class="mono">compose up</span>, or is there orchestration we didn't see (K8s/ECS/Nomad/Swarm)?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">1.3</span><span class="q-text">Host provisioning — any IaC or config mgmt, or hand-built? What's the rebuild-from-zero path?</span></div><div class="read">Read: no Terraform/Ansible/K8s in the repo; nginx configs look hand-placed into <span class="mono">sites-available</span>.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">1.4</span><span class="q-text">Host specs (vCPU / RAM / disk) and current disk headroom?</span></div></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="sec">
+    <div class="sec-head"><span class="n">02</span><h2>Data stores</h2></div>
+    <div class="q prio"><div class="q-top"><span class="q-num">2.1</span><span class="prio-tag">P0</span><span class="q-text">Postgres / Redis / OpenSearch — the containers from compose, or managed (RDS/Aurora/ElastiCache/etc.)?</span></div><div class="read">Read: single containers on local volumes — <span class="mono">pgvector/pg15</span>, <span class="mono">redis:7</span>, <span class="mono">opensearch 2.13</span>.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">2.2</span><span class="q-text">Any Postgres replica / standby, or single primary?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">2.3</span><span class="q-text">Is OpenSearch fully rebuildable from Postgres, or does it hold anything authoritative?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">2.4</span><span class="q-text">Anything durable in Redis (queues, locks, sessions), or pure cache?</span></div></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="sec">
+    <div class="sec-head"><span class="n">03</span><h2>Backups &amp; DR</h2></div>
+    <div class="q prio"><div class="q-top"><span class="q-num">3.1</span><span class="prio-tag">P0</span><span class="q-text">Postgres backups — tool, frequency, destination, encrypted, off-host? PITR / WAL archiving?</span></div><div class="read">Read: nothing in the repo (no dump cron, no WAL-G/pgBackRest, no snapshot job). Assuming it lives outside git — where?</div></div>
+    <div class="q prio"><div class="q-top"><span class="q-num">3.2</span><span class="prio-tag">P0</span><span class="q-text">Last actual restore drill? What RTO / RPO did it show?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">3.3</span><span class="q-text">Are object storage and OpenSearch backed up / snapshotted, or Postgres only?</span></div></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="sec">
+    <div class="sec-head"><span class="n">04</span><h2>Object storage</h2></div>
+    <div class="q prio"><div class="q-top"><span class="q-num">4.1</span><span class="prio-tag">P0</span><span class="q-text">Prod object store — MinIO on the host or real S3? Is the MinIO console/API reachable from the internet?</span></div><div class="read">Read: MinIO behind <span class="mono">files.fwderp.io</span>, but compose also binds it <span class="mono">0.0.0.0:9000/9001</span> — public, bypassing nginx/CF. Intentional?</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">4.2</span><span class="q-text">Encryption at rest, buckets private-by-default, access only via signed URLs? Current object-store size / growth?</span></div></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="sec">
+    <div class="sec-head"><span class="n">05</span><h2>Edge &amp; network</h2></div>
+    <div class="q prio"><div class="q-top"><span class="q-num">5.1</span><span class="prio-tag">P0</span><span class="q-text">Cloudflare SSL/TLS mode (Flexible / Full / Full strict)? Anything stopping direct-to-origin-IP traffic that skips CF?</span></div><div class="read">Read: origin nginx is <span class="mono">listen 80</span> only on every vhost, so CF→origin is plaintext unless it's Full strict.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">5.2</span><span class="q-text">Data-tier ports firewalled at the host/SG level, or only Docker loopback binding?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">5.3</span><span class="q-text">What's Cloudflare actually doing — WAF, rate limiting, bot rules? Configured in dashboard or as code?</span></div></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="sec">
+    <div class="sec-head"><span class="n">06</span><h2>Secrets &amp; config</h2></div>
+    <div class="q prio"><div class="q-top"><span class="q-num">6.1</span><span class="prio-tag">P0</span><span class="q-text">Live values: is <span class="mono">STRICT_AUTH</span> true or false, and is <span class="mono">SESSION_SECRET</span> set to a strong stable value?</span></div><div class="read">Read: <span class="mono">.env.example</span> ships <span class="mono">STRICT_AUTH=false</span>; unset session secret → ephemeral per-process key. Just need the prod state.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">6.2</span><span class="q-text">Secrets management — <span class="mono">.env</span> on the host, or a manager (Vault/SSM/Doppler/etc.)? Where's the canonical copy and who can read it?</span></div><div class="read">Read: single <span class="mono">.env</span> (~80 vars) injected via compose; no manager referenced.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">6.3</span><span class="q-text">Rotation story when a key leaks or someone offboards?</span></div></div>
+  </section>
+
+  <!-- 7 -->
+  <section class="sec">
+    <div class="sec-head"><span class="n">07</span><h2>Environments &amp; releases</h2></div>
+    <div class="q"><div class="q-top"><span class="q-num">7.1</span><span class="q-text">Separate staging, or test against prod? If staging exists — real or synthetic data?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">7.2</span><span class="q-text">Deploy mechanics — who, what commands, downtime, rollback?</span></div><div class="read">Read: CI does typecheck/lint/test/docker-build, no deploy job — assuming manual <span class="mono">compose up</span> over SSH.</div></div>
+    <div class="q prio"><div class="q-top"><span class="q-num">7.3</span><span class="prio-tag">P0</span><span class="q-text">Migrations — how applied, ordering/ledger, rollback, tested pre-prod?</span></div><div class="read">Read: no ledger table found; <span class="mono">migrateAllTenants()</span> runs on API boot and some tables are <span class="mono">CREATE ... IF NOT EXISTS</span> on the request path. Accurate?</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">7.4</span><span class="q-text">Post-deploy verification — smoke check, and who's watching?</span></div></div>
+  </section>
+
+  <!-- 8 -->
+  <section class="sec">
+    <div class="sec-head"><span class="n">08</span><h2>Observability &amp; on-call</h2></div>
+    <div class="q prio"><div class="q-top"><span class="q-num">8.1</span><span class="prio-tag">P0</span><span class="q-text">Uptime/alerting — if prod drops at 2am, what pages whom, and how fast?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">8.2</span><span class="q-text">Log destination, retention, and can you search across a full incident? Metrics beyond the hand-rolled <span class="mono">/metrics</span> counters?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">8.3</span><span class="q-text">Is Sentry actually enabled in prod (DSN set)? Any APM?</span></div><div class="read">Read: Sentry wired but off unless <span class="mono">SENTRY_DSN</span> is set; <span class="mono">/healthz</span> returns <span class="mono">{ok:true}</span> with no dependency checks.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">8.4</span><span class="q-text">Any on-call / incident process, even informal? Who owns "it's down"?</span></div></div>
+  </section>
+
+  <!-- 9 -->
+  <section class="sec">
+    <div class="sec-head"><span class="n">09</span><h2>Access &amp; host security</h2></div>
+    <div class="q"><div class="q-top"><span class="q-num">9.1</span><span class="q-text">Who has shell on prod — individual keys or shared? Cloudflare / registrar / cloud console admins, and is MFA enforced across those?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">9.2</span><span class="q-text">OS + base-image patch cadence — auto, scheduled, ad hoc?</span></div><div class="read">Read: no <span class="mono">USER</span> directive in any Dockerfile — containers run as root, API image bundles Chromium/Ghostscript. Deliberate, or just not gotten to?</div></div>
+  </section>
+
+  <!-- 10 -->
+  <section class="sec">
+    <div class="sec-head"><span class="n">10</span><h2>Multi-tenancy &amp; scale</h2></div>
+    <div class="q prio"><div class="q-top"><span class="q-num">10.1</span><span class="prio-tag">P0</span><span class="q-text">More than one API replica today? If not, what's blocking it — and are the unguarded <span class="mono">setInterval</span> schedulers on your radar?</span></div><div class="read">Read: distributed lock exists but only some schedulers use it; <span class="mono">task-scheduler</span>, email sync, lease-expiry run unguarded. Two replicas would double-fire those.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">10.2</span><span class="q-text">schema-per-tenant cutover — plan, timeline, and expected tenant count in year one?</span></div><div class="read">Read: <span class="mono">TENANT_SCHEMA_MODE</span> switch + cutover migrations present; prod still flat?</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">10.3</span><span class="q-text">New-tenant provisioning — scripted/automated or manual? How long end to end?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">10.4</span><span class="q-text">Any per-tenant resource isolation, or does a heavy tenant's import/report contend on the shared pool?</span></div></div>
+  </section>
+
+  <!-- 11 -->
+  <section class="sec">
+    <div class="sec-head"><span class="n">11</span><h2>Compliance &amp; data lifecycle</h2></div>
+    <div class="q"><div class="q-top"><span class="q-num">11.1</span><span class="q-text">Any customer compliance asks yet — SOC 2, data residency, contractual security terms?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">11.2</span><span class="q-text">Can you export or hard-delete a single tenant's data today? What's the mechanism?</span></div><div class="read">Read: <span class="mono">dropTenantSchema</span> only works in schema mode; flat mode has no clean per-tenant delete path.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">11.3</span><span class="q-text">Written retention policy for docs / logs / terminated-tenant data? Maintained subprocessor list (Plaid, Gusto, MX, OpenAI, …)?</span></div></div>
+  </section>
+
+  <!-- 12 -->
+  <section class="sec">
+    <div class="sec-head"><span class="n">12</span><h2>Ownership &amp; cost</h2></div>
+    <div class="q"><div class="q-top"><span class="q-num">12.1</span><span class="q-text">Who owns infra/ops day-to-day, and what's the bus factor?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">12.2</span><span class="q-text">Rough monthly hosting spend, and any sense of cost per tenant?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">12.3</span><span class="q-text">What's already on your infra to-do list that we didn't ask about — and what worries you most in the stack?</span></div></div>
+  </section>
+
+  <p class="foot"><b>Why this exists.</b> The assessment tells us how the software is built; §1–12 fill in how it's actually run — so recommendations target the real environment. <span class="mono" style="color:var(--crit)">P0</span> items line up with the pre-launch blockers; if you only get to those, we still have what we need to sequence the work.</p>
+
+</div></div>
+
+<script>
+(function(){
+  var KEY = 'fwderp-infra-answers-v1';
+  function load(){ try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e){ return {}; } }
+  function save(o){ try { localStorage.setItem(KEY, JSON.stringify(o)); } catch(e){} }
+  var store = load();
+  var status = document.getElementById('status');
+  var count = 0, filled = 0;
+
+  function flash(msg){ if(status){ status.textContent = msg; } }
+  function tally(){
+    filled = 0;
+    for (var k in store){ if(store.hasOwnProperty(k) && (store[k]||'').trim()) filled++; }
+    flash(filled + ' of ' + count + ' answered · saved locally');
+  }
+
+  document.querySelectorAll('.q').forEach(function(q){
+    var numEl = q.querySelector('.q-num');
+    var num = numEl ? numEl.textContent.trim() : '';
+    if(!num) return;
+    count++;
+    var ta = document.createElement('textarea');
+    ta.className = 'answer';
+    ta.placeholder = 'Answer…';
+    ta.setAttribute('aria-label', 'Answer for item ' + num);
+    ta.value = store[num] || '';
+    ta.addEventListener('input', function(){ store[num] = ta.value; save(store); tally(); });
+    q.appendChild(ta);
+  });
+
+  function meta(q){
+    var bits = [];
+    var prio = q.querySelector('.prio-tag'); if(prio) bits.push('[' + prio.textContent.trim() + ']');
+    var fc = q.querySelector('.fcode'); if(fc) bits.push('· ' + fc.textContent.trim());
+    return bits.length ? ' ' + bits.join(' ') : '';
+  }
+
+  function buildMd(){
+    var out = '# fwdERP — Infrastructure reconciliation (answers)\n\n';
+    document.querySelectorAll('.sec').forEach(function(sec){
+      var n = sec.querySelector('.sec-head .n');
+      var h = sec.querySelector('.sec-head h2');
+      out += '\n## ' + (n?n.textContent.trim():'') + '. ' + (h?h.textContent.trim():'') + '\n\n';
+      sec.querySelectorAll('.q').forEach(function(q){
+        var num = q.querySelector('.q-num'); num = num ? num.textContent.trim() : '';
+        var txt = q.querySelector('.q-text'); txt = txt ? txt.textContent.trim() : '';
+        var read = q.querySelector('.read'); read = read ? read.textContent.trim() : '';
+        var ans = (store[num] || '').trim() || '_(no answer)_';
+        out += '**' + num + meta(q) + '** ' + txt + '\n';
+        if(read) out += '> ' + read + '\n';
+        out += ans + '\n\n';
+      });
+    });
+    return out;
+  }
+
+  function download(){
+    var blob = new Blob([buildMd()], { type: 'text/markdown' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'fwderp-infra-answers.md';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    flash('Downloaded · send us the file');
+  }
+
+  var dl = document.getElementById('dl'); if(dl) dl.addEventListener('click', download);
+  var cp = document.getElementById('cp');
+  if(cp) cp.addEventListener('click', function(){
+    var text = buildMd();
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ flash('Copied to clipboard'); }, function(){ download(); });
+    } else { download(); }
+  });
+  var clr = document.getElementById('clr');
+  if(clr) clr.addEventListener('click', function(){
+    if(!confirm('Clear all your answers on this device?')) return;
+    store = {}; save(store);
+    document.querySelectorAll('.answer').forEach(function(t){ t.value=''; });
+    tally();
+  });
+
+  tally();
+})();
+</script>
+</body>
+</html>
