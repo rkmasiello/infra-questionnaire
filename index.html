@@ -87,6 +87,17 @@
   .foot{margin-top:16px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink3);line-height:1.6}
   .foot b{color:var(--ink2);font-weight:600}
 
+  .lock-gate{margin-top:16px}
+  .lock-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:26px 24px;max-width:460px}
+  .lock-card svg{color:var(--petrol)}
+  .lock-title{font-size:16px;font-weight:600;color:var(--ink);margin:12px 0 4px}
+  .lock-sub{font-size:13.5px;color:var(--ink2);margin:0 0 16px;line-height:1.5}
+  .lock-row{display:flex;gap:8px}
+  .lock-row input{flex:1;height:40px;font-family:var(--sans);font-size:14px;padding:0 12px;border:1px solid var(--line2);border-radius:8px;background:var(--paper);color:var(--ink)}
+  .lock-row input:focus{outline:2px solid var(--petrol);outline-offset:1px;border-color:var(--petrol)}
+  .lock-row button{font-family:var(--sans);font-size:14px;font-weight:500;padding:0 18px;border-radius:8px;border:1px solid var(--petrol);background:var(--petrol);color:#fff;cursor:pointer}
+  .lock-row button:disabled{opacity:.6;cursor:default}
+  .lock-err{font-size:12.5px;color:var(--crit);margin-top:10px;min-height:16px}
   @media(max-width:640px){.mast h1{font-size:27px}.read{margin-left:0}.page{padding:0 16px 60px}}
 </style>
 </head>
@@ -118,7 +129,7 @@
   </div>
 
   <div class="intro">
-    <b>How this works.</b> Nine tabs, grouped by topic — click across the top, or use <b>Next</b> at the bottom of each to step through in order. Type under any item; answers save in this browser as you go. When done, hit <b>Download answers</b> (or <b>Copy</b>) for Markdown to send back. Terse is ideal — "correct", "no, it's X", "intended", "not yet". The <b>Application</b> tab's product/tenancy questions are things the platform likely hasn't built out as a SaaS yet — "not yet" is a perfectly good answer there.
+    <b>How this works.</b> Ten tabs, grouped by topic — click across the top, or use <b>Next</b> at the bottom of each to step through in order. Type under any item; answers save in this browser as you go. When done, hit <b>Download answers</b> (or <b>Copy</b>) for Markdown to send back. Terse is ideal — "correct", "no, it's X", "intended", "not yet". The <b>Application</b> tab's product/tenancy questions are things the platform likely hasn't built out as a SaaS yet — "not yet" is a perfectly good answer there.
   </div>
 
   <!-- ===== TAB 1 ===== -->
@@ -268,7 +279,24 @@
   </section>
 
   <!-- ===== TAB 10 (findings — stripped from public build) ===== -->
-  
+  <!-- FINDINGS-TAB-START -->
+  <section class="tabpanel" data-tab="findings" data-title="Findings to pressure-test" data-label="Findings">
+    <div class="tab-h"><span class="tn">10</span><h2>Findings to pressure-test</h2></div>
+    <p class="tab-lede">Concrete security issues from the assessment. Code review can't see prod config or intent, so several may already be <b>mitigated in your environment</b> or <b>deliberate</b>. For each: <b>real</b>, <b>mitigated</b> (how?), or <b>by-design</b> (why)? Codes cross-reference the assessment.</p>
+    <div class="lock-gate" id="findGate">
+  <div class="lock-card">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+    <div class="lock-title">Security findings — password-protected</div>
+    <p class="lock-sub">These are the assessment’s live security findings. Enter the password you were given to view them.</p>
+    <div class="lock-row"><input type="password" id="findPw" placeholder="Password" autocomplete="off" spellcheck="false"><button id="findUnlock">Unlock</button></div>
+    <div class="lock-err" id="findErr"></div>
+  </div>
+</div>
+<div id="findContent"></div>
+<script type="application/json" id="findBlob">{"salt":"4FfVn2IqZV0DZjTsW6ddhQ==","iv":"sBDwijb99NUemuOV","iter":200000,"ct":"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"}</script>
+    <div class="pager"><button class="prev">Back</button><button class="next">Finish — download answers</button></div>
+  </section>
+  <!-- FINDINGS-TAB-END -->
 
   <p class="foot"><b>Why this exists.</b> The assessment tells us how the software is built; these tabs fill in how it's actually run — so recommendations target the real environment, not our guesses. <span class="mono" style="color:var(--crit)">P0</span> items line up with the pre-launch blockers; the <span class="mono" style="color:var(--petrol)">CHECK</span> items are application spots that looked off — confirm which are real.</p>
 
@@ -295,10 +323,10 @@
     if(pbar) pbar.style.width = (count ? Math.round(filled/count*100) : 0) + '%';
   }
 
-  document.querySelectorAll('.q').forEach(function(q){
+  function injectAnswer(q){
     var numEl = q.querySelector('.q-num');
     var num = numEl ? numEl.textContent.trim() : '';
-    if(!num) return;
+    if(!num || q.querySelector('.answer')) return;
     count++;
     var ta = document.createElement('textarea');
     ta.className = 'answer';
@@ -307,7 +335,8 @@
     ta.value = store[num] || '';
     ta.addEventListener('input', function(){ store[num] = ta.value; save(store); tally(); });
     q.appendChild(ta);
-  });
+  }
+  document.querySelectorAll('.q').forEach(injectAnswer);
 
   panels.forEach(function(p, i){
     var btn = document.createElement('button');
@@ -351,10 +380,12 @@
   function buildMd(){
     var out = '# fwdERP — Reconciliation (answers)\n\n';
     panels.forEach(function(p){
+      var qs = p.querySelectorAll('.q');
+      if(!qs.length) return;
       var title = (p.dataset.title || '').replace(/&amp;/g, '&');
       var n = p.querySelector('.tab-h .tn');
       out += '\n## ' + (n?n.textContent.trim():'') + '. ' + title + '\n\n';
-      p.querySelectorAll('.q').forEach(function(q){
+      qs.forEach(function(q){
         var num = q.querySelector('.q-num'); num = num ? num.textContent.trim() : '';
         var txt = q.querySelector('.q-text'); txt = txt ? txt.textContent.trim() : '';
         var read = q.querySelector('.read'); read = read ? read.textContent.trim() : '';
@@ -391,6 +422,44 @@
     document.querySelectorAll('.answer').forEach(function(t){ t.value = ''; });
     tally();
   });
+
+  // Password-gated Findings tab (public build only — dormant when no #findBlob).
+  var blobEl = document.getElementById('findBlob');
+  if (blobEl && window.crypto && crypto.subtle) {
+    var gate = document.getElementById('findGate');
+    var contentEl = document.getElementById('findContent');
+    var pwEl = document.getElementById('findPw');
+    var unlockBtn = document.getElementById('findUnlock');
+    var errEl = document.getElementById('findErr');
+    var blob = JSON.parse(blobEl.textContent);
+    function b64buf(b64){ var s = atob(b64), u = new Uint8Array(s.length); for(var i=0;i<s.length;i++) u[i]=s.charCodeAt(i); return u.buffer; }
+    function doUnlock(){
+      if(errEl) errEl.textContent = '';
+      var pw = pwEl ? pwEl.value || '' : '';
+      if(!pw){ if(errEl) errEl.textContent = 'Enter the password.'; return; }
+      if(unlockBtn){ unlockBtn.disabled = true; unlockBtn.textContent = 'Unlocking…'; }
+      var enc = new TextEncoder();
+      crypto.subtle.importKey('raw', enc.encode(pw), 'PBKDF2', false, ['deriveKey'])
+        .then(function(km){
+          return crypto.subtle.deriveKey({ name:'PBKDF2', salt:b64buf(blob.salt), iterations:blob.iter, hash:'SHA-256' }, km, { name:'AES-GCM', length:256 }, false, ['decrypt']);
+        })
+        .then(function(key){
+          return crypto.subtle.decrypt({ name:'AES-GCM', iv:b64buf(blob.iv) }, key, b64buf(blob.ct));
+        })
+        .then(function(buf){
+          contentEl.innerHTML = new TextDecoder().decode(buf);
+          if(gate) gate.style.display = 'none';
+          contentEl.querySelectorAll('.q').forEach(injectAnswer);
+          tally();
+        })
+        .catch(function(){
+          if(errEl) errEl.textContent = 'Wrong password.';
+          if(unlockBtn){ unlockBtn.disabled = false; unlockBtn.textContent = 'Unlock'; }
+        });
+    }
+    if(unlockBtn) unlockBtn.addEventListener('click', doUnlock);
+    if(pwEl) pwEl.addEventListener('keydown', function(e){ if(e.key === 'Enter') doUnlock(); });
+  }
 
   var startTab = 0;
   try { var s = parseInt(localStorage.getItem(TABKEY), 10); if(!isNaN(s) && s >= 0 && s < panels.length) startTab = s; } catch(e){}
