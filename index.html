@@ -69,7 +69,7 @@
   .q-text{font-size:15.5px;color:var(--ink);line-height:1.42}
   .q-text b{font-weight:600}
   .prio-tag{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.05em;color:var(--crit);background:var(--crit-t);padding:2px 6px;border-radius:4px;flex:none;margin-top:3px}
-  .read{margin:7px 0 0 38px;font-size:13px;color:var(--ink2);font-family:var(--mono);line-height:1.45;border-left:2px solid var(--line2);padding-left:10px}
+  .read{margin:8px 0 0 38px;font-size:13px;color:var(--ink2);font-family:var(--mono);line-height:1.5;border-left:2px solid var(--line2);padding-left:10px}
   .read b{color:var(--petrol);font-weight:600}
   .answer{display:block;width:100%;margin:11px 0 0;min-height:48px;resize:vertical;font-family:var(--sans);font-size:14px;line-height:1.5;color:var(--ink);background:var(--paper);border:1px solid var(--line2);border-radius:8px;padding:9px 11px}
   .answer::placeholder{color:var(--ink3)}
@@ -80,7 +80,6 @@
   .pager button:hover{border-color:var(--petrol);color:var(--petrol)}
   .pager button.next{background:var(--petrol);color:#fff;border-color:var(--petrol)}
   .pager button.next:hover{color:#fff;filter:brightness(1.08)}
-  .pager button:disabled{opacity:.35;cursor:default}
   .pager button.prev[hidden]{visibility:hidden}
 
   .foot{margin-top:16px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink3);line-height:1.6}
@@ -96,10 +95,10 @@
   <header class="mast">
     <p class="eyebrow"><span class="tag">Discovery</span><span>Infrastructure &amp; Operations</span></p>
     <h1>Infra reconciliation — for Jonathan</h1>
-    <p class="sub">The assessment was a code review, so most of what we can say about the running system is inferred from the repo. Below is what we read — mostly we just need you to confirm or correct it, plus fill in the cloud details the code can't show.</p>
+    <p class="sub">The assessment was a code review, so almost everything below is what we <em>inferred</em> from the repo. Each item carries a <span class="mono" style="color:var(--petrol)">Read:</span> — our best guess at what's actually running. Mostly we just need you to confirm, correct, or fill the gap.</p>
     <div class="keyrow">
       <span><span class="chip p0">P0</span> maps to a pre-launch blocker</span>
-      <span><span class="chip read">Read:</span> what we pulled from the repo — confirm or correct</span>
+      <span><span class="chip read">Read:</span> what we infer from the code — confirm or correct</span>
       <span><span class="fcode" style="margin-top:0">C3</span> cross-refs an assessment finding</span>
     </div>
   </header>
@@ -116,84 +115,84 @@
   </div>
 
   <div class="intro">
-    <b>How this works.</b> Eight tabs, grouped by topic — click across the top, or use <b>Next</b> at the bottom of each to step through in order. Type under any item; answers save in this browser as you go. When done, hit <b>Download answers</b> for a Markdown file to send back. Terse is ideal — "correct", "no, it's X", "not yet". Nothing is transmitted until you export.
+    <b>How this works.</b> Nine tabs, grouped by topic — click across the top, or use <b>Next</b> at the bottom of each to step through in order. Type under any item; answers save in this browser as you go. When done, hit <b>Download answers</b> (or <b>Copy</b>) for Markdown to send back. Terse is ideal — "correct", "no, it's X", "not yet". A few tabs (Tenancy) are things the platform likely hasn't built out as a SaaS yet — "not yet" is a perfectly useful answer.
   </div>
 
   <!-- ===== TAB 1 ===== -->
   <section class="tabpanel active" data-tab="platform" data-title="Platform &amp; hosting" data-label="Platform">
     <div class="tab-h"><span class="tn">01</span><h2>Platform &amp; hosting</h2></div>
-    <p class="tab-lede"><b>Read:</b> a single VM (CentOS/RHEL 8), host nginx → Docker Compose on loopback ports, Cloudflare in front — one box for the whole stack. Confirm that, then fill in the compute detail.</p>
+    <p class="tab-lede">Where and how the whole thing runs.</p>
 
-    <div class="q"><div class="q-top"><span class="q-num">1.1</span><span class="prio-tag">P0</span><span class="q-text">Where does prod run — provider, account, region, single host or several?</span></div><div class="read">Read: one VM, CentOS/RHEL 8, Cloudflare-proxied.</div></div>
-    <div class="q"><div class="q-top"><span class="q-num">1.2</span><span class="q-text">Is prod actually <span class="mono">compose up</span>, or is there orchestration we didn't see (K8s / ECS / EKS / Nomad / Swarm)?</span></div><div class="read">Read: repo only contains compose files.</div></div>
-    <div class="q"><div class="q-top"><span class="q-num">1.3</span><span class="q-text">Compute model — bare EC2 / VMs, Fargate / ECS, EKS, Lightsail, a droplet, on-prem? Instance types &amp; how many?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">1.4</span><span class="q-text">On-demand vs reserved / savings-plan / spot? Any autoscaling group, or a fixed set of instances?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">1.5</span><span class="q-text">Base image / AMI management and OS patch cadence — golden image, or configure-in-place?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">1.6</span><span class="q-text">Host specs (vCPU / RAM / disk) and current disk headroom?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">1.1</span><span class="prio-tag">P0</span><span class="q-text">Where does prod run — provider, account, region, single host or several?</span></div><div class="read">Read: one VM, Cloudflare-proxied. <span class="mono">AWS_REGION=us-east-2</span> in <span class="mono">.env</span> hints AWS, but that could just be for S3. Confirm provider + whether it's truly one box.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">1.2</span><span class="q-text">Is prod plain Docker Compose, or is there orchestration (K8s / ECS / EKS / Nomad / Swarm)?</span></div><div class="read">Read: repo has only <span class="mono">docker-compose.yaml</span> + a thin prod overlay, and <span class="mono">smoke-deploy.sh</span> runs <span class="mono">docker compose</span> on a CentOS/RHEL host — so almost certainly plain Compose. Just confirm there's nothing else.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">1.3</span><span class="q-text">Compute model — bare EC2 / VM, Fargate/ECS, EKS, Lightsail, a droplet, on-prem? Instance type &amp; how many?</span></div><div class="read">Read: single long-lived host running ~11 containers; not serverless. Which instance/size?</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">1.4</span><span class="q-text">On-demand vs reserved / savings-plan / spot? Autoscaling, or a fixed instance?</span></div><div class="read">Read: fixed single instance (every service is <span class="mono">restart: unless-stopped</span>, no <span class="mono">replicas</span>/<span class="mono">deploy</span>). Confirm it's not in an ASG.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">1.5</span><span class="q-text">Base OS &amp; patch cadence — and is the host image built or configured-in-place?</span></div><div class="read">Read: <span class="mono">smoke-deploy.sh</span> says "CentOS/RHEL 8". If that's <em>CentOS Linux 8</em>, it's past end-of-life (unpatched) — worth confirming it's RHEL 8 or a supported rebuild.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">1.6</span><span class="q-text">Host specs (vCPU / RAM / disk) and current disk headroom?</span></div><div class="read">Read: a compose comment mentions "Host has ~24GB"; container <span class="mono">mem_limit</span>s already reserve ~9GB (api 3g, worker 2g, OpenSearch 1g, …). Confirm actual size + free disk.</div></div>
     <div class="pager"><button class="prev" hidden>Back</button><button class="next">Next</button></div>
   </section>
 
   <!-- ===== TAB 2 ===== -->
   <section class="tabpanel" data-tab="iac" data-title="Infrastructure as code" data-label="IaC">
     <div class="tab-h"><span class="tn">02</span><h2>Infrastructure as code</h2></div>
-    <p class="tab-lede"><b>Read:</b> no Terraform / Ansible / K8s in the repo, and the nginx vhosts look hand-placed into <span class="mono">sites-available</span>. So this is mostly genuine unknowns — tell us how much of the environment is codified.</p>
+    <p class="tab-lede">How reproducible the environment is.</p>
 
-    <div class="q"><div class="q-top"><span class="q-num">2.1</span><span class="q-text">IaC tooling — Terraform / CloudFormation / CDK / Pulumi / none? Where's state stored, and is it locked (S3 + DynamoDB, TF Cloud, etc.)?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">2.2</span><span class="q-text">What share of infra is codified vs click-ops in the console? Any load-bearing resources that exist only because someone made them by hand?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">2.3</span><span class="q-text">Server bootstrapping / config management — Ansible, cloud-init, a shell script, or manual steps?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">2.4</span><span class="prio-tag">P0</span><span class="q-text">Rebuild-from-zero: could you recreate the whole environment from code, and has that ever been tested?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">2.5</span><span class="q-text">Is non-prod built from the same definitions as prod, or is each environment a snowflake?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">2.1</span><span class="q-text">IaC tooling — Terraform / CloudFormation / CDK / Pulumi / none? Where's state stored &amp; is it locked?</span></div><div class="read">Read: none in the repo — no <span class="mono">.tf</span>, no CFN/CDK. If IaC exists it's in another repo; tell us where, else assume click-ops.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">2.2</span><span class="q-text">What share of infra is codified vs built by hand in the console? Any load-bearing resource that exists only manually?</span></div><div class="read">Read: the app stack is codified (compose), but the host, nginx, DNS, firewall, and any cloud resources appear hand-made — nginx configs even say "Place in <span class="mono">/etc/nginx/sites-available/</span>".</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">2.3</span><span class="q-text">Server bootstrapping / config management — Ansible, cloud-init, a setup script, or manual steps?</span></div><div class="read">Read: nothing found; looks like manual host setup + Compose.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">2.4</span><span class="prio-tag">P0</span><span class="q-text">Rebuild-from-zero: could you recreate the whole environment from code, and has that ever been tested?</span></div><div class="read">Read: with no IaC + no backups found, a from-scratch rebuild looks like it'd be manual and largely undocumented. Correct us if there's a runbook.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">2.5</span><span class="q-text">Is non-prod built from the same definitions as prod, or a snowflake?</span></div><div class="read">Read: no staging config in the repo at all (only <span class="mono">.env.example</span>) — looks like a single environment. Confirm.</div></div>
     <div class="pager"><button class="prev">Back</button><button class="next">Next</button></div>
   </section>
 
   <!-- ===== TAB 3 ===== -->
   <section class="tabpanel" data-tab="cloud" data-title="Cloud resources" data-label="Cloud">
     <div class="tab-h"><span class="tn">03</span><h2>Cloud resources</h2></div>
-    <p class="tab-lede">The primitives underneath the containers — storage, network, identity, keys. The code can't see any of this, so it's the biggest gap. Answer in your provider's terms (AWS names below, or the equivalent).</p>
+    <p class="tab-lede">The primitives underneath the containers. The code can't see these, so the Reads here are educated guesses from the single-host setup — correct freely.</p>
 
     <div class="grp">Storage &amp; volumes</div>
-    <div class="q"><div class="q-top"><span class="q-num">3.1</span><span class="q-text">Block storage (EBS or equiv) — volume types (gp3 / io2 / …), sizes, and provisioned IOPS / throughput? Which services sit on which volumes?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">3.2</span><span class="prio-tag">P0</span><span class="q-text">Volume snapshots — scheduled? retention? copied cross-region or cross-account? (often the <em>real</em> DB/host backup — ties to the Backups tab)</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">3.3</span><span class="q-text">Encryption at rest on volumes &amp; snapshots — on? customer-managed KMS key, or provider default?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">3.1</span><span class="q-text">Block storage (EBS or equiv) — volume types (gp3 / io2 / …), sizes, provisioned IOPS / throughput? Which services on which volumes?</span></div><div class="read">Read: compose uses local named volumes (<span class="mono">pgdata</span>, <span class="mono">minio</span>) on the host disk — so likely one or two general-purpose volumes, not per-service provisioned IOPS. Confirm the actual layout.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">3.2</span><span class="prio-tag">P0</span><span class="q-text">Volume snapshots — scheduled? retention? copied cross-region / cross-account?</span></div><div class="read">Read: no snapshot automation in the repo. If snapshots exist they're a console/cron thing outside git — and they may be your <em>only</em> DB backup today (see Backups tab).</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">3.3</span><span class="q-text">Encryption at rest on volumes &amp; snapshots — on? customer-managed KMS key, or provider default?</span></div><div class="read">Read: not visible in code; there's no app-level field encryption, so at-rest protection is whatever the volume/bucket defaults are.</div></div>
 
     <div class="grp">Network</div>
-    <div class="q"><div class="q-top"><span class="q-num">3.4</span><span class="q-text">VPC / network layout — public vs private subnets, NAT gateway, and are you spread across multiple AZs?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">3.5</span><span class="q-text">Security groups / NACLs (or host firewall) — how locked down are they, and who can change them?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">3.6</span><span class="q-text">Load balancer in front (ALB / NLB), or is host nginx the only LB? Health checks wired up? Where does TLS actually terminate?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">3.7</span><span class="q-text">DNS — Route 53, Cloudflare, elsewhere? Who controls the zone, and are TTLs low enough to fail over?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">3.4</span><span class="q-text">VPC / network layout — public vs private subnets, NAT, multiple AZs?</span></div><div class="read">Read: single host with a public IP behind Cloudflare; no VPC/subnet topology expressed anywhere in the repo. Is the box in a VPC with any segmentation, or flat?</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">3.5</span><span class="q-text">Security groups / NACLs (or host firewall) — how locked down, and who can change them?</span></div><div class="read">Read: the only network control we can see is Docker binding datastores to <span class="mono">127.0.0.1</span> (loopback). Is there also a cloud SG / host firewall, or is loopback binding the whole story?</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">3.6</span><span class="q-text">Load balancer in front (ALB / NLB), or is host nginx the only proxy? Health checks? Where does TLS terminate?</span></div><div class="read">Read: host nginx is the only proxy in the repo (<span class="mono">upstream → 127.0.0.1:3201</span>); no ALB/NLB. TLS terminates at Cloudflare — origin nginx is plain <span class="mono">:80</span>. Confirm.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">3.7</span><span class="q-text">DNS — Route 53, Cloudflare, elsewhere? Who controls the zone, and are TTLs low enough to fail over?</span></div><div class="read">Read: Cloudflare is clearly in front (CF IP ranges hard-coded in nginx <span class="mono">real_ip</span>), so DNS is almost certainly Cloudflare. Who owns that account?</div></div>
 
     <div class="grp">Identity, keys &amp; registry</div>
-    <div class="q"><div class="q-top"><span class="q-num">3.8</span><span class="prio-tag">P0</span><span class="q-text">Cloud IAM — instance roles vs long-lived access keys? How does the app get its AWS creds — an instance role, or <span class="mono">AWS_ACCESS_KEY_ID</span> in <span class="mono">.env</span>? Any wildcard/admin keys around? Console MFA / SSO enforced?</span></div><div class="read">Read: app uses the AWS SDK; <span class="mono">.env.example</span> has <span class="mono">AWS_ACCESS_KEY_ID</span> / <span class="mono">AWS_REGION=us-east-2</span>.</div></div>
-    <div class="q"><div class="q-top"><span class="q-num">3.9</span><span class="q-text">KMS / key management — what's encrypted with what, customer-managed vs default keys, and is rotation on?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">3.10</span><span class="q-text">Container registry — ECR / GHCR / Docker Hub? Image scanning, immutable tags?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">3.8</span><span class="prio-tag">P0</span><span class="q-text">Cloud IAM — instance roles vs long-lived keys? How does the app get AWS creds — instance role, or <span class="mono">AWS_ACCESS_KEY_ID</span> in <span class="mono">.env</span>? Any wildcard/admin keys? Console MFA / SSO?</span></div><div class="read">Read: <span class="mono">.env.example</span> carries <span class="mono">AWS_ACCESS_KEY_ID</span> / <span class="mono">AWS_SECRET_ACCESS_KEY</span> — so it looks like <em>long-lived keys in .env</em>, not an instance role. If so, scope + rotation matter.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">3.9</span><span class="q-text">KMS / key management — what's encrypted with what, customer-managed vs default keys, rotation?</span></div><div class="read">Read: no KMS or crypto usage in the app code; secrets/tokens are stored as plaintext columns, so any at-rest encryption is infra-level only.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">3.10</span><span class="q-text">Container registry — ECR / GHCR / Docker Hub? Image scanning, immutable tags?</span></div><div class="read">Read: CI builds images but with <span class="mono">push: false</span> — no registry push in the repo. So images are likely built on the host at deploy time rather than pulled from a registry. Confirm.</div></div>
 
     <div class="grp">Region &amp; availability</div>
-    <div class="q"><div class="q-top"><span class="q-num">3.11</span><span class="prio-tag">P0</span><span class="q-text">Region &amp; AZ — single region, single AZ (a SPOF), or spread? Any data-residency constraints or multi-region plans?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">3.11</span><span class="prio-tag">P0</span><span class="q-text">Region &amp; AZ — single region, single AZ (a SPOF), or spread? Data-residency constraints or multi-region plans?</span></div><div class="read">Read: single host ⇒ single AZ, single region (likely <span class="mono">us-east-2</span>). That's a total-outage SPOF for every tenant. Confirm + note any residency needs.</div></div>
     <div class="pager"><button class="prev">Back</button><button class="next">Next</button></div>
   </section>
 
   <!-- ===== TAB 4 ===== -->
   <section class="tabpanel" data-tab="data" data-title="Data &amp; storage" data-label="Data">
     <div class="tab-h"><span class="tn">04</span><h2>Data &amp; storage</h2></div>
-    <p class="tab-lede"><b>Read:</b> single containers for Postgres (<span class="mono">pgvector/pg15</span>), Redis, OpenSearch on local volumes; MinIO for objects.</p>
+    <p class="tab-lede">The stateful tiers — where the durability risk concentrates.</p>
 
-    <div class="q"><div class="q-top"><span class="q-num">4.1</span><span class="prio-tag">P0</span><span class="q-text">Postgres / Redis / OpenSearch — the compose containers, or managed (RDS / Aurora / ElastiCache / OpenSearch Service)?</span></div><div class="read">Read: single containers on local volumes.</div></div>
-    <div class="q"><div class="q-top"><span class="q-num">4.2</span><span class="q-text">Any Postgres replica / standby, or single primary?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">4.3</span><span class="q-text">Is OpenSearch fully rebuildable from Postgres? Anything durable in Redis (queues, locks, sessions), or pure cache?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">4.4</span><span class="prio-tag">P0</span><span class="q-text">Object store — MinIO on the host or real S3? Is the MinIO console / API reachable from the internet?</span></div><div class="read">Read: MinIO behind <span class="mono">files.fwderp.io</span>, but compose also binds it <span class="mono">0.0.0.0:9000/9001</span> — public, bypassing nginx / CF. Intentional?</div></div>
-    <div class="q"><div class="q-top"><span class="q-num">4.5</span><span class="q-text">Object store — encryption at rest, buckets private-by-default with signed-URL-only access, current size / growth?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">4.1</span><span class="prio-tag">P0</span><span class="q-text">Postgres / Redis / OpenSearch — the compose containers, or managed (RDS / Aurora / ElastiCache / OpenSearch Service)?</span></div><div class="read">Read: compose runs <span class="mono">pgvector/pg15</span>, <span class="mono">redis:7</span>, <span class="mono">opensearch 2.13</span> as containers on local volumes — no managed-service references anywhere.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">4.2</span><span class="q-text">Any Postgres replica / standby, or single primary?</span></div><div class="read">Read: one <span class="mono">postgres</span> service, no replica/standby in compose. Single primary is the assumption.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">4.3</span><span class="q-text">Is OpenSearch fully rebuildable from Postgres? Anything durable in Redis, or pure cache?</span></div><div class="read">Read: OpenSearch is fed by NATS-driven indexers with a <span class="mono">/search/backfill</span> route → looks rebuildable. Redis holds cache + a distributed lock + API-key rate-limit counters → coordination, not source-of-truth. Confirm.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">4.4</span><span class="prio-tag">P0</span><span class="q-text">Object store — MinIO on the host or real S3? Is the MinIO console / API reachable from the internet?</span></div><div class="read">Read: MinIO container, fronted at <span class="mono">files.fwderp.io</span> — but compose also binds it <span class="mono">0.0.0.0:9000/9001</span>, i.e. public and bypassing nginx/CF. Intentional, or should it be loopback?</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">4.5</span><span class="q-text">Object store — encryption at rest, buckets private-by-default (signed-URL-only), size / growth?</span></div><div class="read">Read: buckets are effectively private (downloads go through presigned URLs), but at-rest encryption depends on MinIO/host config, not visible in code.</div></div>
     <div class="pager"><button class="prev">Back</button><button class="next">Next</button></div>
   </section>
 
   <!-- ===== TAB 5 ===== -->
   <section class="tabpanel" data-tab="backups" data-title="Backups &amp; DR" data-label="Backups">
     <div class="tab-h"><span class="tn">05</span><h2>Backups &amp; DR</h2></div>
-    <p class="tab-lede"><b>Read:</b> nothing in the repo — no dump cron, no WAL-G / pgBackRest, no snapshot job. We're assuming it lives outside git; tell us where.</p>
+    <p class="tab-lede">The most consequential gap in the assessment. We found nothing in the repo — hoping it lives outside git.</p>
 
-    <div class="q"><div class="q-top"><span class="q-num">5.1</span><span class="prio-tag">P0</span><span class="q-text">Postgres backups — tool, frequency, destination, encrypted, off-host? PITR / WAL archiving?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">5.2</span><span class="prio-tag">P0</span><span class="q-text">Last actual restore drill? What RTO / RPO did it show?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">5.3</span><span class="q-text">Are object storage and OpenSearch backed up? Do the volume snapshots (3.2) cover the DB, or is it logical dumps — or both?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">5.4</span><span class="q-text">DR runbook — if the host (or region) died right now, what are the steps and the realistic time to back online?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">5.1</span><span class="prio-tag">P0</span><span class="q-text">Postgres backups — tool, frequency, destination, encrypted, off-host? PITR / WAL archiving?</span></div><div class="read">Read: no <span class="mono">pg_dump</span> cron, no WAL-G / pgBackRest, no snapshot job anywhere. <span class="mono">pg_dump</span> appears only as a manual step in the schema-cutover runbook. Where do backups actually happen?</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">5.2</span><span class="prio-tag">P0</span><span class="q-text">Last actual restore drill? What RTO / RPO did it show?</span></div><div class="read">Read: nothing in the repo speaks to this — genuinely unknown.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">5.3</span><span class="q-text">Are object storage &amp; OpenSearch backed up? Do volume snapshots (3.2) cover the DB, or is it logical dumps — or both?</span></div><div class="read">Read: no backup/snapshot jobs for MinIO or OpenSearch found. If EBS snapshots are the backup, we should know that.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">5.4</span><span class="q-text">DR runbook — if the host (or region) died right now, what are the steps and realistic time to back online?</span></div><div class="read">Read: no DR runbook in the repo — only <span class="mono">smoke-deploy.sh</span> (post-deploy checks) and disk-hygiene notes. What's the real recovery path?</div></div>
     <div class="pager"><button class="prev">Back</button><button class="next">Next</button></div>
   </section>
 
@@ -203,54 +202,73 @@
     <p class="tab-lede">Secrets, who can touch what, and how the perimeter is actually closed.</p>
 
     <div class="grp">Secrets</div>
-    <div class="q"><div class="q-top"><span class="q-num">6.1</span><span class="prio-tag">P0</span><span class="q-text">Live values: is <span class="mono">STRICT_AUTH</span> true or false, and is <span class="mono">SESSION_SECRET</span> set to a strong, stable value?</span></div><div class="read">Read: <span class="mono">.env.example</span> ships <span class="mono">STRICT_AUTH=false</span>; unset session secret → ephemeral per-process key.</div></div>
-    <div class="q"><div class="q-top"><span class="q-num">6.2</span><span class="q-text">Secrets management — <span class="mono">.env</span> on the host, or a manager (Vault / SSM / Doppler / SOPS)? Where's the canonical copy and who can read it?</span></div><div class="read">Read: single <span class="mono">.env</span> (~80 vars) via compose; no manager referenced.</div></div>
-    <div class="q"><div class="q-top"><span class="q-num">6.3</span><span class="q-text">Rotation story when a key leaks or someone offboards?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">6.1</span><span class="prio-tag">P0</span><span class="q-text">Live values: is <span class="mono">STRICT_AUTH</span> true or false, and is <span class="mono">SESSION_SECRET</span> set to a strong, stable value?</span></div><div class="read">Read: <span class="mono">.env.example</span> ships <span class="mono">STRICT_AUTH=false</span> (header-trust auth active); unset <span class="mono">SESSION_SECRET</span> → ephemeral per-process key. We need the prod values.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">6.2</span><span class="q-text">Secrets management — <span class="mono">.env</span> on the host, or a manager (Vault / SSM / Doppler / SOPS)? Canonical copy, who can read it?</span></div><div class="read">Read: single <span class="mono">.env</span> (~80 vars) injected via compose; no manager referenced. <span class="mono">.env</span> is gitignored and nothing real is committed — good — but on-disk plaintext is the assumption.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">6.3</span><span class="q-text">Rotation story when a key leaks or someone offboards?</span></div><div class="read">Read: no rotation tooling in the repo; implied path is hand-editing <span class="mono">.env</span> + restart. Confirm.</div></div>
 
     <div class="grp">Access</div>
-    <div class="q"><div class="q-top"><span class="q-num">6.4</span><span class="q-text">Host / SSH access — individual keys or a shared login? Bastion, or direct?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">6.5</span><span class="q-text">Cloud console / Cloudflare / domain registrar / GitHub admins — who has them, and is MFA (ideally SSO) enforced across all?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">6.4</span><span class="q-text">Host / SSH access — individual keys or a shared login? Bastion, or direct?</span></div><div class="read">Read: not in the repo, but <span class="mono">smoke-deploy.sh</span> (journalctl/docker commands) implies people SSH directly to the box. Who, and how?</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">6.5</span><span class="q-text">Cloud console / Cloudflare / domain registrar / GitHub admins — who has them, and is MFA (ideally SSO) enforced across all?</span></div><div class="read">Read: not visible in code — an account-governance question. These are the real keys to the kingdom.</div></div>
 
     <div class="grp">Perimeter &amp; hardening</div>
-    <div class="q"><div class="q-top"><span class="q-num">6.6</span><span class="prio-tag">P0</span><span class="q-text">Cloudflare SSL/TLS mode (Flexible / Full / Full strict)? Anything stopping direct-to-origin-IP traffic that skips CF? Data-tier ports firewalled at the SG/host level, or only Docker loopback? WAF beyond the default proxy?</span></div><div class="read">Read: origin nginx is <span class="mono">listen 80</span> only on every vhost.</div></div>
-    <div class="q"><div class="q-top"><span class="q-num">6.7</span><span class="q-text">Containers run as root (no <span class="mono">USER</span> directive, API image bundles Chromium / Ghostscript) — deliberate, or not gotten to? Any image / dependency vuln scanning?</span></div></div>
+    <div class="q"><div class="q-top"><span class="q-num">6.6</span><span class="prio-tag">P0</span><span class="q-text">Cloudflare SSL/TLS mode (Flexible / Full / Full strict)? Anything blocking direct-to-origin-IP traffic that skips CF? Data-tier ports firewalled at SG/host level, or only Docker loopback? WAF beyond the default proxy?</span></div><div class="read">Read: origin nginx is <span class="mono">listen 80</span> only on every vhost, so CF→origin is plaintext unless it's Full strict. No WAF config in the repo (that'd be Cloudflare-dashboard side).</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">6.7</span><span class="q-text">Containers run as root — deliberate? Any image / dependency vuln scanning?</span></div><div class="read">Read: no <span class="mono">USER</span> directive in any Dockerfile; the API image bundles Chromium / Ghostscript / GraphicsMagick (big escape surface). CI runs <span class="mono">npm ci --no-audit</span> — no dependency-vuln gate.</div></div>
     <div class="pager"><button class="prev">Back</button><button class="next">Next</button></div>
   </section>
 
   <!-- ===== TAB 7 ===== -->
   <section class="tabpanel" data-tab="delivery" data-title="Delivery &amp; ops" data-label="Delivery">
     <div class="tab-h"><span class="tn">07</span><h2>Delivery &amp; ops</h2></div>
-    <p class="tab-lede"><b>Read:</b> CI does typecheck / lint / test / docker-build but has no deploy job; migrations look manual and partly run on API boot.</p>
+    <p class="tab-lede">How code gets to prod, and whether you'd notice if it broke.</p>
 
-    <div class="q"><div class="q-top"><span class="q-num">7.1</span><span class="q-text">Separate staging, or test against prod? If staging exists — real or synthetic data?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">7.2</span><span class="q-text">Deploy mechanics — who, what commands, downtime, rollback?</span></div><div class="read">Read: assuming manual <span class="mono">compose up</span> over SSH.</div></div>
-    <div class="q"><div class="q-top"><span class="q-num">7.3</span><span class="prio-tag">P0</span><span class="q-text">Migrations — how applied, ordering / ledger, rollback, tested pre-prod?</span></div><div class="read">Read: no ledger table found; <span class="mono">migrateAllTenants()</span> runs on boot; some tables are <span class="mono">CREATE ... IF NOT EXISTS</span> on the request path.</div></div>
-    <div class="q"><div class="q-top"><span class="q-num">7.4</span><span class="q-text">Post-deploy verification — smoke check, and who's watching?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">7.5</span><span class="prio-tag">P0</span><span class="q-text">Observability — if prod drops at 2am, what pages whom and how fast? Where do logs go (retention, searchable)? Is Sentry actually enabled? Any APM? An on-call / incident process, even informal?</span></div><div class="read">Read: Sentry off unless <span class="mono">SENTRY_DSN</span> set; <span class="mono">/metrics</span> is three counters; <span class="mono">/healthz</span> checks nothing.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">7.1</span><span class="q-text">Separate staging, or test against prod? If staging exists — real or synthetic data?</span></div><div class="read">Read: no staging compose/env in the repo (only <span class="mono">.env.example</span>) → looks like a single prod environment. Confirm.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">7.2</span><span class="q-text">Deploy mechanics — who, what commands, downtime, rollback?</span></div><div class="read">Read: CI has <em>no</em> deploy job and docker build is <span class="mono">push: false</span>; <span class="mono">smoke-deploy.sh</span> is a CentOS/RHEL post-deploy check → implies a manual <span class="mono">git pull</span> + <span class="mono">docker compose up --build</span> on the host. Right?</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">7.3</span><span class="q-text">Versioning &amp; rollback point — how do you know what's deployed, and how do you pin/revert to a known-good build?</span></div><div class="read">Read: no git tags, every package is <span class="mono">0.1.0</span>, no CHANGELOG/release workflow — so "what's deployed" ≈ "current <span class="mono">main</span>". Rollback would be <span class="mono">git checkout &lt;sha&gt;</span> + rebuild?</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">7.4</span><span class="prio-tag">P0</span><span class="q-text">Migrations — how applied, ordering / ledger, rollback, tested pre-prod?</span></div><div class="read">Read: no migration-ledger table found; <span class="mono">migrateAllTenants()</span> runs on API boot, and some tables are <span class="mono">CREATE ... IF NOT EXISTS</span> on the request path. 160+ <span class="mono">.sql</span> files look applied by hand. That accurate?</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">7.5</span><span class="prio-tag">P0</span><span class="q-text">Observability — if prod drops at 2am, what pages whom and how fast? Logs (destination / retention / searchable)? Sentry enabled? APM? On-call / incident process?</span></div><div class="read">Read: Sentry is wired but off unless <span class="mono">SENTRY_DSN</span> is set; <span class="mono">/metrics</span> is three in-process counters; <span class="mono">/healthz</span> returns <span class="mono">{ok:true}</span> with no dependency checks; audit-log writes are fire-and-forget. Looks like customers would notice before you do.</div></div>
     <div class="pager"><button class="prev">Back</button><button class="next">Next</button></div>
   </section>
 
   <!-- ===== TAB 8 ===== -->
-  <section class="tabpanel" data-tab="scale" data-title="Scale, compliance &amp; ownership" data-label="Scale">
-    <div class="tab-h"><span class="tn">08</span><h2>Scale, compliance &amp; ownership</h2></div>
-    <p class="tab-lede">The multi-tenant SaaS end-state, the data-lifecycle obligations that come with it, and who's holding it all.</p>
+  <section class="tabpanel" data-tab="tenancy" data-title="Tenancy &amp; onboarding" data-label="Tenancy">
+    <div class="tab-h"><span class="tn">08</span><h2>Tenancy &amp; onboarding</h2></div>
+    <p class="tab-lede">The SaaS-productization layer. From the code this looks early — invite-based, admin-provisioned, no billing — which is fine; we just want to map what exists vs. what's still to build.</p>
 
-    <div class="grp">Scale &amp; tenancy</div>
-    <div class="q"><div class="q-top"><span class="q-num">8.1</span><span class="prio-tag">P0</span><span class="q-text">More than one API replica today? If not, what's blocking it — and is the unguarded <span class="mono">setInterval</span> scheduler double-fire risk on your radar?</span></div><div class="read">Read: distributed lock exists but only some schedulers use it; two replicas would double-fire the rest.</div></div>
-    <div class="q"><div class="q-top"><span class="q-num">8.2</span><span class="q-text">schema-per-tenant cutover — plan, timeline, and expected tenant count in year one?</span></div><div class="read">Read: <span class="mono">TENANT_SCHEMA_MODE</span> switch + cutover migrations present; prod still flat?</div></div>
-    <div class="q"><div class="q-top"><span class="q-num">8.3</span><span class="q-text">New-tenant provisioning — scripted / automated or manual, and how long end to end? Per-tenant resource isolation, or shared-pool contention? Cost tagging per tenant?</span></div></div>
+    <div class="grp">Provisioning &amp; onboarding</div>
+    <div class="q"><div class="q-top"><span class="q-num">8.1</span><span class="q-text">How is a new tenant provisioned today — and how manual / how long is it?</span></div><div class="read">Read: looks like a multi-step admin flow — <span class="mono">POST /tenants/create</span> → <span class="mono">/:id/onboard</span> (<span class="mono">ensureTenantTables</span>) → <span class="mono">seed-coa-all-tenants</span> → <span class="mono">seed-rbac</span> → <span class="mono">assign-user-to-tenants</span>. Scripted end-to-end, or hand-run per tenant?</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">8.2</span><span class="q-text">Is there self-serve signup, or is it invite-only / sales-assisted?</span></div><div class="read">Read: onboarding is invite-token based (<span class="mono">invitations.ts</span> — validate / accept / decline); no self-serve signup or registration flow found. Assuming invite-only for now — is a signup flow on the roadmap?</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">8.3</span><span class="q-text">Is there an admin / platform console to provision &amp; manage tenants, or is it API + scripts + SQL?</span></div><div class="read">Read: there's a platform-admin concept (<span class="mono">admin.platform_admins</span>, <span class="mono">grant-platform-admin</span> CLI, platform-admin routes) but we didn't see a full tenant-management UI. What do you actually use to run onboarding?</div></div>
 
-    <div class="grp">Compliance &amp; data lifecycle</div>
-    <div class="q"><div class="q-top"><span class="q-num">8.4</span><span class="q-text">Any customer compliance asks yet — SOC 2, data residency, contractual security terms?</span></div></div>
-    <div class="q"><div class="q-top"><span class="q-num">8.5</span><span class="q-text">Can you export or hard-delete a single tenant's data today? What's the mechanism?</span></div><div class="read">Read: <span class="mono">dropTenantSchema</span> only works in schema mode; flat mode has no clean per-tenant delete.</div></div>
-    <div class="q"><div class="q-top"><span class="q-num">8.6</span><span class="q-text">Written retention policy (docs / logs / terminated-tenant data)? A maintained subprocessor list (Plaid, Gusto, MX, OpenAI, …)?</span></div></div>
+    <div class="grp">Billing &amp; packaging</div>
+    <div class="q"><div class="q-top"><span class="q-num">8.4</span><span class="q-text">How do tenants pay you — and is any of it in-product (subscription / metering), or all contracts &amp; off-platform invoicing?</span></div><div class="read">Read: no SaaS billing in the codebase — the invoicing/AR is the ERP charging <em>its</em> customers, not you charging tenants. Stripe appears only for RE resident payments. So today: off-platform? </div></div>
+    <div class="q"><div class="q-top"><span class="q-num">8.5</span><span class="q-text">Plan tiers / entitlements / feature gating — anything, or is access all-or-nothing per tenant?</span></div><div class="read">Read: nothing found beyond per-tenant <span class="mono">AI usage budgets</span> (migration 155, monthly caps) + RBAC. No plan/tier/entitlement concept. Is packaging designed yet?</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">8.6</span><span class="q-text">Usage metering — do you track per-tenant usage (storage, seats, AI spend, API calls) anywhere you could bill or limit on?</span></div><div class="read">Read: only AI usage/budget tracking exists; no seat/storage/API metering surfaced. What would you meter on if you productized?</div></div>
 
-    <div class="grp">Ownership &amp; cost</div>
-    <div class="q"><div class="q-top"><span class="q-num">8.7</span><span class="q-text">Who owns infra / ops day-to-day, and what's the bus factor? Rough monthly spend and any sense of cost per tenant? And — what's on your own infra to-do list that we didn't ask about, plus what worries you most in the stack?</span></div></div>
+    <div class="grp">Tenant lifecycle</div>
+    <div class="q"><div class="q-top"><span class="q-num">8.7</span><span class="q-text">Can you suspend, offboard, export, or hard-delete a single tenant today? What's the mechanism?</span></div><div class="read">Read: <span class="mono">dropTenantSchema</span> works only in schema mode; flat mode (prod) has no clean per-tenant delete, and the only wipe is a dev-only <span class="mono">__dev__/reset-all</span>. So offboarding/export looks unbuilt — confirm.</div></div>
     <div class="pager"><button class="prev">Back</button><button class="next">Next</button></div>
   </section>
 
-  <!-- ===== TAB 9 (findings — stripped from public build) ===== -->
+  <!-- ===== TAB 9 ===== -->
+  <section class="tabpanel" data-tab="scale" data-title="Scale, compliance &amp; ownership" data-label="Scale">
+    <div class="tab-h"><span class="tn">09</span><h2>Scale, compliance &amp; ownership</h2></div>
+    <p class="tab-lede">Reliability at N tenants, the obligations that come with handling this data, and who's holding it.</p>
+
+    <div class="grp">Scale &amp; reliability</div>
+    <div class="q"><div class="q-top"><span class="q-num">9.1</span><span class="prio-tag">P0</span><span class="q-text">More than one API replica today? If not, what's blocking it — and is the unguarded <span class="mono">setInterval</span> scheduler double-fire risk on your radar?</span></div><div class="read">Read: a distributed lock exists but only some schedulers use it; running two replicas would double-fire the rest (duplicate emails, journal entries, agent runs). Assuming single replica today.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">9.2</span><span class="q-text">schema-per-tenant cutover — plan, timeline, and expected tenant count in year one?</span></div><div class="read">Read: <span class="mono">TENANT_SCHEMA_MODE</span> switch + cutover migrations + parity check + rollback + RUNBOOK all exist, so it's staged — but prod is presumably still <em>flat</em>. Where are you in that, and how many tenants are you sizing for?</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">9.3</span><span class="q-text">Per-tenant resource isolation, or does a heavy tenant contend with everyone on the shared DB?</span></div><div class="read">Read: all tenants share one Postgres + a 20-conn pool (plus a 4-conn bulk pool). The bulk pool was added <em>after</em> a big import OOM-crashed the process — so noisy-neighbor is already a known pressure point.</div></div>
+
+    <div class="grp">Compliance &amp; data lifecycle</div>
+    <div class="q"><div class="q-top"><span class="q-num">9.4</span><span class="q-text">Any customer compliance asks yet — SOC 2, data residency, contractual security terms?</span></div><div class="read">Read: not in the repo — a customer/contract question. Financial-SaaS buyers usually ask for SOC 2 eventually.</div></div>
+    <div class="q"><div class="q-top"><span class="q-num">9.5</span><span class="q-text">Retention policy (docs / logs / terminated-tenant data), and a maintained subprocessor list?</span></div><div class="read">Read: no retention/purge jobs in the repo. Your subprocessor list from the code: Plaid, MX, Gusto, TransUnion SmartMove, OpenAI/Anthropic, Google/Microsoft, Discord, DocuSign/Dropbox Sign, Telnyx, Stripe, JobTread. Complete?</div></div>
+
+    <div class="grp">Ownership &amp; cost</div>
+    <div class="q"><div class="q-top"><span class="q-num">9.6</span><span class="q-text">Who owns infra / ops day-to-day &amp; what's the bus factor? Rough monthly spend + any sense of cost per tenant? And — what's on your own infra to-do list we didn't ask about, plus what worries you most in the stack?</span></div><div class="read">Read: not visible in code. A hand-built single-host setup often lives in one person's head — we want the honest continuity + cost picture, and the thing you'd fix first.</div></div>
+    <div class="pager"><button class="prev">Back</button><button class="next">Next</button></div>
+  </section>
+
+  <!-- ===== TAB 10 (findings — stripped from public build) ===== -->
   
 
   <p class="foot"><b>Why this exists.</b> The assessment tells us how the software is built; these tabs fill in how it's actually run — so recommendations target the real environment, not our guesses. <span class="mono" style="color:var(--crit)">P0</span> items line up with the pre-launch blockers; if you only get to those, we still have what we need to sequence the work.</p>
@@ -259,8 +277,8 @@
 
 <script>
 (function(){
-  var KEY = 'fwderp-infra-answers-v2';
-  var TABKEY = 'fwderp-infra-tab-v2';
+  var KEY = 'fwderp-infra-answers-v3';
+  var TABKEY = 'fwderp-infra-tab-v3';
   function load(){ try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e){ return {}; } }
   function save(o){ try { localStorage.setItem(KEY, JSON.stringify(o)); } catch(e){} }
   var store = load();
@@ -278,7 +296,6 @@
     if(pbar) pbar.style.width = (count ? Math.round(filled/count*100) : 0) + '%';
   }
 
-  // Inject answer boxes
   document.querySelectorAll('.q').forEach(function(q){
     var numEl = q.querySelector('.q-num');
     var num = numEl ? numEl.textContent.trim() : '';
@@ -293,7 +310,6 @@
     q.appendChild(ta);
   });
 
-  // Build tab buttons
   var current = 0;
   panels.forEach(function(p, i){
     var btn = document.createElement('button');
@@ -311,7 +327,6 @@
     current = i;
     panels.forEach(function(p, j){ p.classList.toggle('active', j === i); });
     tablist.querySelectorAll('.tab-btn').forEach(function(b, j){ b.setAttribute('aria-selected', j === i ? 'true' : 'false'); });
-    // pager labels
     var p = panels[i];
     var prev = p.querySelector('.pager .prev');
     var next = p.querySelector('.pager .next');
@@ -321,7 +336,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // Wire pagers
   panels.forEach(function(p, i){
     var prev = p.querySelector('.pager .prev');
     var next = p.querySelector('.pager .next');
